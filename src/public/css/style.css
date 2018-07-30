@@ -1,0 +1,72 @@
+html {
+  overflow-y: auto;
+}
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  /* background: linear-gradient(120grad, rgb(100, 57, 134), rgb(152, 174, 213)); */
+}
+
+a {
+  color: #00B7FF;
+}
+
+.section {
+  padding: 0;
+}
+.field:not(:last-child) {
+  margin-bottom: 1.5rem;
+}
+.hero-body {
+  padding: 3rem 8rem;
+}
+.login {
+  background-color: #fff;
+  box-shadow: 0 3rem 3rem -1rem rgba(10,10,10,.2);
+  border-radius: 6px;
+  height: 600px;
+  width: 1000px;
+  margin: 0 auto;
+}
+
+.login .columns {
+  margin: 0;
+  height: 100%
+}
+
+.login .login-left {
+  padding-top: 80px;
+}
+
+.login .logo {
+  text-align: center
+}
+
+.login .logo img {
+  width: 160px;
+}
+
+.login .login-form {
+  padding: 40px 30px;
+}
+
+.login .login-banner {
+  background-color: #fdf7f5;
+  background: url(../img/illustration.jpg);
+  background-size: contain;
+  position: relative;
+}
+
+.login .login-banner .slogan {
+  position: absolute;
+  left: 76px;
+  bottom: 100px;
+  color: #fff;
+  font-size: 46px;
+  font-weight: bold;
+  /* text-shadow: 2px 2px 0px rgba(0,0,0,0.2); */
+}
+
+::selection {
+  color: #ffffff;
+  background: #FF4600;
+}

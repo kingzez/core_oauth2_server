@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/css/bulma.min.css' />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+    crossorigin="anonymous">
+  <link rel='stylesheet' href='/css/style.css' />
+  <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon">
+</head>
+
+<body>
+  <div class="hero is-fullheight is-light">
+    <div class="hero-body">
+      <div class="container">
+        <div class="section login">
+          <div class="columns">
+            <div class="column is-one-third login-left">
+              <div class="logo">
+                <img src="/img/logo.png" alt="">
+              </div>
+              <div class="login-form">
+                <form id="login" name="login-form" action="/login" method="POST">
+                  <div class="field">
+                    <p class="control has-icons-left">
+                      <input class="input" type="text" name="username" placeholder="用户名或邮箱">
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-envelope"></i>
+                      </span>
+                    </p>
+                  </div>
+
+                  <div class="field">
+                    <p class="control has-icons-left">
+                      <input class="input" type="password" name="password" placeholder="密码">
+                      <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                      </span>
+                    </p>
+                  </div>
+
+                  <div class="field">
+                    <div class="control has-icons-left">
+                      <div class="select">
+                        <select name="platform">
+                          <option value="">选择平台</option>
+                          <option value="remarketing">再营销</option>
+                          <option value="remarketingAgent">再营销代理商平台</option>
+                          <option value="wk">微客</option>
+                        </select>
+                      </div>
+                      <div class="icon is-small is-left">
+                        <i class="fas fa-globe"></i>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <p class="control" style="float: right;">
+                      <button id="submitBtn" class="button is-primary" style="padding: 0 40px">
+                        登录
+                      </button>
+                    </p>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="column login-banner">
+              <p class="slogan">企业直销营销云</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
