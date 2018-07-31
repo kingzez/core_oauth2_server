@@ -1,9 +1,12 @@
 import path from 'path'
-import express from 'express'
+import { default as express, Request, Response } from 'express'
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import session from 'express-session'
 import cors from 'cors'
+import { login } from './routes/site'
+
+import './auth'
 
 const app = express()
 
@@ -22,10 +25,16 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 // temp router
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
+    res.send('Core_oauth2_server')
+})
+
+app.get('/login', (req: Request, res: Response) => {
     res.render('index', {
         title: '小云营销 登录'
     })
 })
+
+app.post('/login', login);
 
 export default app

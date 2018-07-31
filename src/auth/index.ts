@@ -2,17 +2,16 @@ import passport from 'passport'
 import passportLocal from 'passport-local'
 import passportHttpBearer from 'passport-http-bearer'
 
-import User from '../models/user'
+import Passport from '../models/passport'
 import { Client } from '../models/client'
 import AccessToken from '../models/access_token'
-
 const LocalStrategy = passportLocal.Strategy
 const BearerStrategy = passportHttpBearer.Strategy
 
 passport.serializeUser<any, any>((user, done) => done(null, user.id))
 
 passport.deserializeUser((id, done) => {
-  User.findOne({ where: {id} })
+    Passport.findOne({ where: {id} })
     .then(user => done(null, user))
     .catch(err => done(err, null))
 })
@@ -25,7 +24,7 @@ passport.deserializeUser((id, done) => {
  * a user is logged in before asking them to approve the request.
  */
 passport.use(new LocalStrategy((username: string, password: string, done: any) => {
-    User.findOne({ where: {username} })
+    Passport.findOne({ where: {username} })
         .then(user => {
             if (!user) return done(null, false)
             if (user.password !== password) return done(null, false)
@@ -49,7 +48,7 @@ passport.use(new BearerStrategy((token: string, done: any) => {
         .then(token => {
             if (!token) return done(null, false)
             if (token.userId) {
-                User.findOne({ where: {id: token.userId } })
+                Passport.findOne({ where: {id: token.userId } })
                     .then(user => {
                         if (!user) return done(null, false)
                         // TODO resricted scopes
