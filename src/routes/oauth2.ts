@@ -8,6 +8,8 @@ import { Client, ClientAttributes } from '../models/client'
 import AuthorizationCode from '../models/authorization_code'
 import AccessToken from '../models/access_token'
 import { getUid } from '../util/util'
+import logger from '../util/logger'
+
 
 // Create OAuth 2.0 Server
 const server = oauth2orize.createServer()
@@ -47,14 +49,17 @@ server.deserializeClient((id, done) => {
 // the application. The application issues a code, which is bound to these
 // values, and will be exchanged for an access token.
 
-server.grant(oauth2orize.grant.code((client, redirectUri, user, area, done) => {
+server.grant(oauth2orize.grant.code((client, redirectUri, passport, area, done) => {
     const code = getUid(16)
-    AuthorizationCode.create({ code, clientId:client.id, redirectUri, userId:user.id })
+    AuthorizationCode.create({ code, clientId:client.id, redirectUri, passportId:passport.id })
         .then((result: any) => {
+            logger.debug('result',result)
             if (!result) return done(result, null)
             return done(null, code)
         })
-        .catch((err:any) => done(err,null))
+        .catch((err:any) => {
+            done(err,null)
+        })
 }))
 
 // Grant implicit authorization. The callback takes the `client` requesting
@@ -63,9 +68,9 @@ server.grant(oauth2orize.grant.code((client, redirectUri, user, area, done) => {
 // the application. The application issues a token, which is bound to these
 // values.
 
-server.grant(oauth2orize.grant.token((client, user, ares, done) => {
+server.grant(oauth2orize.grant.token((client, passport, ares, done) => {
     const token = getUid(256)
-    AccessToken.create({ token, userId: user.id, clientId: client.clientId })
+    AccessToken.create({ token, passportId: passport.id, clientId: client.clientId })
         .then((result: any) => {
             if (!result) return done(result, null)
             return done(null, token)
@@ -86,7 +91,7 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
             if (client.id !== authCode.clientId) return done(null, false)
             if (redirectUri !== authCode.redirectUri) return done(null, false)
             const token = getUid(256)
-            AccessToken.create({ token, userId: authCode.userId, clientId: authCode.clientId })
+            AccessToken.create({ token, passportId: authCode.passportId, clientId: authCode.clientId })
                 .then((result:any) => {
                     if (!result) return done(result, null)
                     return done(null, token)
@@ -121,13 +126,13 @@ export const authorization:any = [
                 // TODO registered scope
                 return done(null, client, redirectUri)
             })
-    }, (client, user, done:any) => {
+    }, (client, passport, done:any) => {
         // Check if grant request qualifies for immediate approval
 
         // Auto-approve
         if (client.isTrusted) return done(null, true)
 
-        AccessToken.findOne({ where: {userId: user.id, clientId: client.clientId } })
+        AccessToken.findOne({ where: {passportId: passport.id, clientId: client.clientId } })
             .then(token => {
                 // Auto-approve
                 if (token) return done(null, true)

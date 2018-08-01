@@ -8,8 +8,8 @@ interface PassportAttributes {
     username: string,
     password: string,
     email: string,
-    createdAt: number,
-    updatedAt: number,
+    createdAt?: number,
+    updatedAt?: number,
 }
 
 type PassportInstance = Sequelize.Instance<PassportAttributes> & PassportAttributes

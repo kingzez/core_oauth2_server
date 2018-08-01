@@ -4,7 +4,8 @@ import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import session from 'express-session'
 import cors from 'cors'
-import { login } from './routes/site'
+import { login, logout } from './routes/site'
+import { authorization, decision, token } from './routes/oauth2'
 
 import './auth'
 
@@ -35,6 +36,10 @@ app.get('/login', (req: Request, res: Response) => {
     })
 })
 
-app.post('/login', login);
+app.post('/login', login)
+app.get('/logout', logout)
+app.get('/dialog/authorize', authorization)
+app.post('/dialog/authorize/decision', decision)
+app.post('/oauth/token', token)
 
 export default app

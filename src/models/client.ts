@@ -8,6 +8,8 @@ export interface ClientAttributes {
     clientId: string,
     clientSecret: string,
     isTrusted: boolean,
+    createdAt?: number,
+    updatedAt?: number,
 }
 
 type ClientInstance = Sequelize.Instance<ClientAttributes> & ClientAttributes
@@ -33,8 +35,20 @@ const attributes: SequelizeAttributes<ClientAttributes> = {
     isTrusted: {
         type: Sequelize.BOOLEAN,
     },
+    createdAt: {
+        type: Sequelize.BIGINT,
+        defaultValue: function() {
+            return Date.now()
+        }
+    },
+    updatedAt: {
+        type: Sequelize.BIGINT,
+        defaultValue: function() {
+            return Date.now()
+        }
+    },
 }
 
-export const Client = db.define<ClientInstance, ClientAttributes>('Client', attributes)
+export const Client = db.define<ClientInstance, ClientAttributes>('Client', attributes, { tableName: 'Client' })
 
 // export default Client

@@ -4,10 +4,12 @@ import v4 from 'uuid'
 
 interface AuthorizationCodeAttributes {
     id?: string,
-    userId: string,
+    passportId: string,
     clientId: string,
     code: string,
     redirectUri: string,
+    createdAt?: number,
+    updatedAt?: number,
 }
 
 type AuthorizationCodeInstance = Sequelize.Instance<AuthorizationCodeAttributes> & AuthorizationCodeAttributes
@@ -18,8 +20,8 @@ const attributes: SequelizeAttributes<AuthorizationCodeAttributes> = {
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
     },
-    userId: {
-        type: Sequelize.STRING,
+    passportId: {
+        type: Sequelize.UUID,
         allowNull: false,
     },
     clientId: {
@@ -35,8 +37,25 @@ const attributes: SequelizeAttributes<AuthorizationCodeAttributes> = {
         type: Sequelize.STRING,
         allowNull: false,
     },
+    createdAt: {
+        type: Sequelize.BIGINT,
+        defaultValue: function() {
+            return Date.now()
+        }
+    },
+    updatedAt: {
+        type: Sequelize.BIGINT,
+        defaultValue: function() {
+            return Date.now()
+        }
+    },
 }
 
-const AuthorizationCode = db.define<AuthorizationCodeInstance, AuthorizationCodeAttributes>('AuthorizationCode', attributes)
+const AuthorizationCode = db.define<AuthorizationCodeInstance, AuthorizationCodeAttributes>('AuthorizationCode', attributes, { tableName: 'AuthorizationCode' })
+
+AuthorizationCode.sync({
+    force: false
+})
+
 
 export default AuthorizationCode
