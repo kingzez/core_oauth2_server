@@ -20,7 +20,7 @@ const attributes: SequelizeAttributes<AccessTokenAttributes> = {
         defaultValue: Sequelize.UUIDV4,
     },
     token: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
     },
     passportId: {
@@ -48,7 +48,7 @@ const attributes: SequelizeAttributes<AccessTokenAttributes> = {
 const AccessToken = db.define<AccessTokenInstance, AccessTokenAttributes>('AccessToken', attributes, { tableName: 'AccessToken' })
 
 AccessToken.sync({
-    force: true
+    force: true,
 })
 
 export default AccessToken

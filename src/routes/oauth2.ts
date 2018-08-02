@@ -4,7 +4,7 @@ import login from 'connect-ensure-login'
 import { Request, Response } from "express";
 import { OAuth2 } from 'oauth2orize' //interface
 
-import { Client, ClientAttributes } from '../models/client'
+import { default as Client, ClientAttributes } from '../models/client'
 import AuthorizationCode from '../models/authorization_code'
 import AccessToken from '../models/access_token'
 import { getUid } from '../util/util'
@@ -53,11 +53,12 @@ server.grant(oauth2orize.grant.code((client, redirectUri, passport, area, done) 
     const code = getUid(16)
     AuthorizationCode.create({ code, clientId:client.id, redirectUri, passportId:passport.id })
         .then((result: any) => {
-            logger.debug('result',result)
+            logger.debug('authotizationCode create result',JSON.stringify(result))
             if (!result) return done(result, null)
             return done(null, code)
         })
         .catch((err:any) => {
+            logger.debug(err)
             done(err,null)
         })
 }))
@@ -75,7 +76,10 @@ server.grant(oauth2orize.grant.token((client, passport, ares, done) => {
             if (!result) return done(result, null)
             return done(null, token)
         })
-        .catch((err: any) => done(err, null))
+        .catch((err: any) => {
+            logger.debug('err:\n', err)
+            return done(err, null)
+        })
 }))
 
 // Exchange authorization codes for access tokens. The callback accepts the
@@ -93,6 +97,7 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
             const token = getUid(256)
             AccessToken.create({ token, passportId: authCode.passportId, clientId: authCode.clientId })
                 .then((result:any) => {
+                    logger.debug('accessToken create result', JSON.stringify(result))
                     if (!result) return done(result, null)
                     return done(null, token)
                 })

@@ -54,7 +54,7 @@ const attributes: SequelizeAttributes<AuthorizationCodeAttributes> = {
 const AuthorizationCode = db.define<AuthorizationCodeInstance, AuthorizationCodeAttributes>('AuthorizationCode', attributes, { tableName: 'AuthorizationCode' })
 
 AuthorizationCode.sync({
-    force: false
+    force: true,
 })
 
 

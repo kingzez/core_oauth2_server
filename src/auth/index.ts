@@ -1,12 +1,17 @@
 import passport from 'passport'
 import passportLocal from 'passport-local'
+import passportHttp from 'passport-http'
 import passportHttpBearer from 'passport-http-bearer'
+import passportOauth2ClientPassword from 'passport-oauth2-client-password'
 
 import Passport from '../models/passport'
-import { Client } from '../models/client'
+import { default as Client } from '../models/client'
 import AccessToken from '../models/access_token'
+
 const LocalStrategy = passportLocal.Strategy
+const BasicStrategy = passportHttp.BasicStrategy
 const BearerStrategy = passportHttpBearer.Strategy
+const ClientPasswordStrategy = passportOauth2ClientPassword.Strategy
 
 passport.serializeUser<any, any>((user, done) => done(null, user.id))
 
@@ -34,6 +39,31 @@ passport.use(new LocalStrategy((username: string, password: string, done: any) =
   }
 ))
 
+/**
+ * BasicStrategy & ClientPasswordStrategy
+ *
+ * These strategies are used to authenticate registered OAuth clients. They are
+ * employed to protect the `token` endpoint, which consumers use to obtain
+ * access tokens. The OAuth 2.0 specification suggests that clients use the
+ * HTTP Basic scheme to authenticate. Use of the client password strategy
+ * allows clients to send the same credentials in the request body (as opposed
+ * to the `Authorization` header). While this approach is not recommended by
+ * the specification, in practice it is quite common.
+ */
+function verifyClient(clientId: string, clientSecret: string, done: any) {
+    Client.findOne({ where: { clientId } })
+        .then(client => {
+            if (!client) return done(null, false)
+            if (client.clientSecret !== clientSecret) return done(null, false)
+            return done(null, client)
+        })
+        .catch(err => done(err, null))
+  }
+
+  passport.use(new BasicStrategy(verifyClient))
+
+  passport.use(new ClientPasswordStrategy(verifyClient))
+
 
 /**
  * BearerStrategy
@@ -47,8 +77,8 @@ passport.use(new BearerStrategy((token: string, done: any) => {
     AccessToken.findOne({ where: {token} })
         .then(token => {
             if (!token) return done(null, false)
-            if (token.userId) {
-                Passport.findOne({ where: {id: token.userId } })
+            if (token.passportId) {
+                Passport.findOne({ where: {id: token.passportId} })
                     .then(user => {
                         if (!user) return done(null, false)
                         // TODO resricted scopes

@@ -49,6 +49,6 @@ const attributes: SequelizeAttributes<ClientAttributes> = {
     },
 }
 
-export const Client = db.define<ClientInstance, ClientAttributes>('Client', attributes, { tableName: 'Client' })
+const Client = db.define<ClientInstance, ClientAttributes>('Client', attributes, { tableName: 'Client' })
 
-// export default Client
+export default Client
