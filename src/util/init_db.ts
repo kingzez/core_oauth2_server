@@ -14,37 +14,29 @@ function exit() {
 
 // init Passport
 (async() => {
-    try {
-        let admin = await Passport.create({
-            id: uuidv4(),
-            username: 'admin',
-            password: 'admin',
-            email: 'admin@xiaoyun.com',
-            createdAt: now,
-            updatedAt: now,
-        })
-        logger.debug('created: ' + JSON.stringify(admin))
-    } catch (err) {
-        logger.debug(err)
-    }
+    let admin = await Passport.create({
+        id: uuidv4(),
+        username: 'admin',
+        password: 'admin',
+        email: 'admin@xiaoyun.com',
+        createdAt: now,
+        updatedAt: now,
+    }).catch((err) => logger.debug(err))
+    if (admin) logger.debug('created: ' + JSON.stringify(admin))
 })();
 
 
 // init Client
 (async() => {
-    try {
-        let rmk = await Client.create({
-            id: uuidv4(),
-            name: 'rmk',
-            clientId: 'rmk',
-            clientSecret: 'rmk',
-            isTrusted: true,
-            createdAt: now,
-            updatedAt: now,
-        })
-        logger.debug('created: ' + JSON.stringify(rmk))
-        exit()
-    } catch (err) {
-        logger.debug(err)
-    }
+    let rmk = await Client.create({
+        id: uuidv4(),
+        name: 'rmk',
+        clientId: 'rmk',
+        clientSecret: 'rmk',
+        isTrusted: true,
+        createdAt: now,
+        updatedAt: now,
+    }).catch((err) => logger.debug(err))
+    if (rmk) logger.debug('created: ' + JSON.stringify(rmk))
+    exit()
 })();
