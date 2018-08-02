@@ -6,6 +6,7 @@ import v4 from 'uuid'
 interface PassportAttributes {
     id?: string,
     username: string,
+    userId: string,
     password: string,
     email: string,
     createdAt?: number,
@@ -23,6 +24,10 @@ const attributes: SequelizeAttributes<PassportAttributes> = {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
+    },
+    userId: {
+        type: Sequelize.UUID,
+        primaryKey: true,
     },
     password: {
         type: Sequelize.STRING,

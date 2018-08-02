@@ -5,8 +5,10 @@ import passportHttpBearer from 'passport-http-bearer'
 import passportOauth2ClientPassword from 'passport-oauth2-client-password'
 
 import Passport from '../models/passport'
+import User from '../models/user'
 import { default as Client } from '../models/client'
 import AccessToken from '../models/access_token'
+import logger from '../util/logger'
 
 const LocalStrategy = passportLocal.Strategy
 const BasicStrategy = passportHttp.BasicStrategy
@@ -78,11 +80,19 @@ passport.use(new BearerStrategy((token: string, done: any) => {
         .then(token => {
             if (!token) return done(null, false)
             if (token.passportId) {
+                logger.debug(JSON.stringify(token))
                 Passport.findOne({ where: {id: token.passportId} })
-                    .then(user => {
-                        if (!user) return done(null, false)
+                    .then(passport => {
+                        if (!passport) return done(null, false)
                         // TODO resricted scopes
-                        done(null, user, { scope: '*' })
+                        logger.debug('passport.userId', passport.userId)
+                        User.findOne({ where: { id: passport.userId } })
+                            .then(user => {
+                                logger.debug('user', JSON.stringify( user ))
+                                if(!user) return done(null, false)
+                                done(null, user, { scope: '*' })
+                            })
+                            .catch(err => done(err, null))            
                     })
                     .catch(err => done(err, null))
             } else {

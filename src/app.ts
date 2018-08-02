@@ -6,6 +6,7 @@ import session from 'express-session'
 import cors from 'cors'
 import { login, logout } from './routes/site'
 import { authorization, decision, token } from './routes/oauth2'
+import { info } from './routes/user'
 
 import './auth'
 
@@ -41,5 +42,7 @@ app.get('/logout', logout)
 app.get('/dialog/authorize', authorization)
 app.post('/dialog/authorize/decision', decision)
 app.post('/oauth/token', token)
+
+app.get('/api/userinfo', info)
 
 export default app
