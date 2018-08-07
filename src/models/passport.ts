@@ -3,7 +3,7 @@ import Sequelize from 'sequelize'
 import db from '../lib/db'
 import v4 from 'uuid'
 
-interface PassportAttributes {
+export interface PassportAttributes {
     id?: string,
     username: string,
     userId: string,

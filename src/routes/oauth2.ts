@@ -1,18 +1,24 @@
 import oauth2orize from 'oauth2orize'
 import passport from 'passport'
 import login from 'connect-ensure-login'
-import { Request, Response } from "express";
-import { OAuth2 } from 'oauth2orize' //interface
+import { Request, Response, RequestHandler } from "express"
+import {
+    OAuth2Server,
+    OAuth2,
+    MiddlewareFunction,
+    SerializeClientDoneFunction,
+    DeserializeClientDoneFunction
+} from 'oauth2orize'
+import Axios, { AxiosResponse, AxiosError } from 'axios'
 
 import { default as Client, ClientAttributes } from '../models/client'
-import AuthorizationCode from '../models/authorization_code'
-import AccessToken from '../models/access_token'
+import { PassportAttributes } from '../models/passport'
 import { getUid } from '../util/util'
 import logger from '../util/logger'
-
+import { SESSION_HOST } from '../config'
 
 // Create OAuth 2.0 Server
-const server = oauth2orize.createServer()
+const server: OAuth2Server = oauth2orize.createServer()
 
 // Register serialialization and deserialization functions.
 //
@@ -27,9 +33,9 @@ const server = oauth2orize.createServer()
 // simple matter of serializing the client's ID, and deserializing by finding
 // the client by ID from the database.
 
-server.serializeClient((client, done) => done(null, client.id))
+server.serializeClient((client: any, done: SerializeClientDoneFunction) => done(null, client.id))
 
-server.deserializeClient((id, done) => {
+server.deserializeClient((id: string, done: DeserializeClientDoneFunction) => {
     Client.findOne({ where: {id} })
         .then(client => done(null, client))
         .catch(err => done(err,null))
@@ -49,18 +55,20 @@ server.deserializeClient((id, done) => {
 // the application. The application issues a code, which is bound to these
 // values, and will be exchanged for an access token.
 
-server.grant(oauth2orize.grant.code((client, redirectUri, passport, area, done) => {
+server.grant(oauth2orize.grant.code((client: ClientAttributes, redirectUri: string, passport: PassportAttributes, done: any) => {
     const code = getUid(16)
-    AuthorizationCode.create({ code, clientId:client.id, redirectUri, passportId:passport.id })
-        .then((result: any) => {
-            logger.debug('authotizationCode create result',JSON.stringify(result))
-            if (!result) return done(result, null)
-            return done(null, code)
-        })
-        .catch((err:any) => {
-            logger.debug(err)
-            done(err,null)
-        })
+    Axios.post(SESSION_HOST+'/authcode', {
+        code,
+        clientId: client.id,
+        redirectUri,
+        passportId: passport.id
+    }).then((res: AxiosResponse) => {
+        logger.debug('create authCode result: \n', res.data)
+        return done(null, code)
+    }).catch((err: any) => {
+        logger.debug(err)
+        done(err, null)
+    })
 }))
 
 // Grant implicit authorization. The callback takes the `client` requesting
@@ -69,17 +77,16 @@ server.grant(oauth2orize.grant.code((client, redirectUri, passport, area, done) 
 // the application. The application issues a token, which is bound to these
 // values.
 
-server.grant(oauth2orize.grant.token((client, passport, ares, done) => {
+server.grant(oauth2orize.grant.token((client: ClientAttributes, passport: PassportAttributes, done: any) => {
     const token = getUid(256)
-    AccessToken.create({ token, passportId: passport.id, clientId: client.clientId })
-        .then((result: any) => {
-            if (!result) return done(result, null)
-            return done(null, token)
-        })
-        .catch((err: any) => {
-            logger.debug('err:\n', err)
-            return done(err, null)
-        })
+    Axios.post(SESSION_HOST + '/accesstoken', {
+        token,
+        passportId: passport.id,
+        clientId: client.clientId
+    }).then((res: AxiosResponse) => {
+        logger.debug('create accessToken result: \n', res.data)
+        return done(null, token)
+    }).catch((err: AxiosError) => done(err, null))
 }))
 
 // Exchange authorization codes for access tokens. The callback accepts the
@@ -88,20 +95,24 @@ server.grant(oauth2orize.grant.token((client, passport, ares, done) => {
 // application issues an access token on behalf of the user who authorized the
 // code.
 
-server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
-    AuthorizationCode.findOne({ where: {code} })
-        .then(authCode => {
-            if (!authCode) return done(null, false)
+server.exchange(oauth2orize.exchange.code((client: ClientAttributes, code: string, redirectUri: string, done: any) => {
+    Axios.get(`${SESSION_HOST}/authcode?code=${code}`)
+        .then((res: AxiosResponse) => {
+            logger.debug('find authCode result: \n', res.data)
+            if (!res.data.authCode) return done(null, false)
+            const authCode = res.data.authCode
+            logger.debug(client.id, authCode.clientId)
             if (client.id !== authCode.clientId) return done(null, false)
             if (redirectUri !== authCode.redirectUri) return done(null, false)
             const token = getUid(256)
-            AccessToken.create({ token, passportId: authCode.passportId, clientId: authCode.clientId })
-                .then((result:any) => {
-                    logger.debug('accessToken create result', JSON.stringify(result))
-                    if (!result) return done(result, null)
-                    return done(null, token)
-                })
-                .catch((err: any) => done(err, null))
+            Axios.post(SESSION_HOST + '/accesstoken', {
+                token,
+                passportId: authCode.passportId,
+                clientId: authCode.clientId
+            }).then((res: AxiosResponse) => {
+                logger.debug('create accessToken: \n', res.data)
+                return done(null, token)
+            }).catch((err: AxiosError) => done(err, null))
         })
 }))
 
@@ -122,33 +133,35 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
 // authorization). We accomplish that here by routing through `ensureLoggedIn()`
 // first, and rendering the `dialog` view.
 
-export const authorization:any = [
+export const authorization:(MiddlewareFunction | RequestHandler)[] = [
     login.ensureLoggedIn(),
-    server.authorization((clientId, redirectUri, done) => {
+    server.authorization((clientId: string, redirectUri: string, done: any) => {
         Client.findOne({ where: {clientId} })
-            .then((client:any) => {
+            .then((client: ClientAttributes) => {
                 if (!client) return done(client, null)
                 // TODO registered scope
                 return done(null, client, redirectUri)
             })
-    }, (client, passport, done:any) => {
+    }, (client: ClientAttributes, passport: PassportAttributes, done:any) => {
         // Check if grant request qualifies for immediate approval
 
         // Auto-approve
         if (client.isTrusted) return done(null, true)
 
-        AccessToken.findOne({ where: {passportId: passport.id, clientId: client.clientId } })
-            .then(token => {
+        Axios.get(`${SESSION_HOST}/accesstoken?passportId=${passport.id}&clientId=${client.clientId}`)
+            .then((res: AxiosResponse) => {
                 // Auto-approve
-                if (token) return done(null, true)
+                logger.debug('find accessToken result: \n', res.data)
+                if (!res.data.accessToken) return done(null, true)
 
                 // Otherwise ask user
                 return done(null, false)
+            }).catch((err: AxiosError) => {
+                logger.debug('error', err)
+                return done(err, null)
             })
     }),
-    // TODO use Request, Response
-    // need confirm correct
-    (req:Request & { oauth2: OAuth2 }, res:Response) => {
+    (req: Request & { oauth2: OAuth2 }, res: Response) => {
         res.render('dialog', {
             transactionId: req.oauth2.transactionID,
             user: req.user,
@@ -166,7 +179,7 @@ export const authorization:any = [
 // client, the above grant middleware configured above will be invoked to send
 // a response.
 
-export const decision = [
+export const decision: (MiddlewareFunction | RequestHandler)[] = [
     login.ensureLoggedIn(),
     // @ts-ignore
     server.decision(),
@@ -180,7 +193,7 @@ export const decision = [
 // exchange middleware will be invoked to handle the request. Clients must
 // authenticate when making requests to this endpoint.
 
-export const token = [
+export const token: (MiddlewareFunction | RequestHandler)[] = [
     passport.authenticate(['basic', 'oauth2-client-password'], { session: false }),
     server.token(),
     server.errorHandler(),

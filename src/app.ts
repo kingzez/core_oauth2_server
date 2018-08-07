@@ -1,16 +1,18 @@
 import path from 'path'
-import { default as express, Request, Response } from 'express'
+import { default as express, Application, Request, Response } from 'express'
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import session from 'express-session'
 import cors from 'cors'
+
 import { login, logout } from './routes/site'
 import { authorization, decision, token } from './routes/oauth2'
 import { info } from './routes/user'
+import { APP_NAME }  from './config'
 
 import './auth'
 
-const app = express()
+const app: Application = express()
 
 // Express configuration
 app.set("port", process.env.PORT || 8998)
@@ -33,7 +35,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.get('/login', (req: Request, res: Response) => {
     res.render('index', {
-        title: '小云营销 登录'
+        title: APP_NAME
     })
 })
 

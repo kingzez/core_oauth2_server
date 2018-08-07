@@ -3,12 +3,13 @@ import passportLocal from 'passport-local'
 import passportHttp from 'passport-http'
 import passportHttpBearer from 'passport-http-bearer'
 import passportOauth2ClientPassword from 'passport-oauth2-client-password'
+import Axios, { AxiosResponse, AxiosError } from 'axios'
 
-import Passport from '../models/passport'
-import User from '../models/user'
+import { default as Passport, PassportAttributes } from '../models/passport'
+import { default as User, UserAttributes } from '../models/user'
 import { default as Client } from '../models/client'
-import AccessToken from '../models/access_token'
 import logger from '../util/logger'
+import { SESSION_HOST } from '../config'
 
 const LocalStrategy = passportLocal.Strategy
 const BasicStrategy = passportHttp.BasicStrategy
@@ -76,33 +77,20 @@ function verifyClient(clientId: string, clientSecret: string, done: any) {
  * the authorizing user.
  */
 passport.use(new BearerStrategy((token: string, done: any) => {
-    AccessToken.findOne({ where: {token} })
-        .then(token => {
-            if (!token) return done(null, false)
-            if (token.passportId) {
-                logger.debug(JSON.stringify(token))
-                Passport.findOne({ where: {id: token.passportId} })
-                    .then(passport => {
-                        if (!passport) return done(null, false)
-                        // TODO resricted scopes
-                        logger.debug('passport.userId', passport.userId)
-                        User.findOne({ where: { id: passport.userId } })
-                            .then(user => {
-                                logger.debug('user', JSON.stringify( user ))
-                                if(!user) return done(null, false)
-                                done(null, user, { scope: '*' })
-                            })
-                            .catch(err => done(err, null))            
-                    })
-                    .catch(err => done(err, null))
-            } else {
-                Client.findOne({ where: {clientId: token.clientId} })
-                    .then(client => {
-                        if (!client) return done(null, false)
-                        // TODO resricted scopes
-                        done(null, client, { scope: '*' })
-                    })
-            }
-        })
+    Axios.get(`${SESSION_HOST}/accesstoken?token=${token}`)
+        .then(async (res: AxiosResponse) => {
+            logger.debug('find accesstoken result: \n', res.data)
+            if (!res.data.accessToken) return done(null, true)
+            const token = res.data.accessToken
+
+            let passport: PassportAttributes = await Passport.findOne({ where: {id: token.passportId} }).catch((err: any) => done(err, null))
+            let user: UserAttributes = await User.findOne({ where: {id: passport.userId} }).catch((err: any) => done(err, null))
+
+            if (!passport) return done(null, false)
+            if (!user) return done(null, false)
+
+            return done(null, user, { scope: '*' })
+
+        }).catch((err: AxiosError) => done(err, null))
   }
 ))
