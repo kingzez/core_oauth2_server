@@ -6,6 +6,5 @@ export const info: (MiddlewareFunction | RequestHandler)[] = [
     passport.authenticate('bearer', { session: false }),
     (req: Request, res: Response) => {
         res.json({ user: req.user, scope: req.authInfo.scope })
-
     }
   ]

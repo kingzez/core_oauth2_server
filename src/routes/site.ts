@@ -8,8 +8,7 @@ export const login: RequestHandler = passport.authenticate('local', {
     failureRedirect: '/login'
 })
 
-export const logout: RequestHandler =  function( request: Request , response: Response ){
-    request.logout();
-    response.redirect('/');
+export const logout: RequestHandler = (req: Request , res: Response) => {
+    req.logout()
+    res.redirect('/')
   }
-
