@@ -3,24 +3,24 @@
 [Englist](http://review.xiaoyun.com/diffusion/21/browse/master/README.md?as=remarkup)
 
 ### 安装项目依赖
-```
+```bash
 npm i
 ```
 
 ### 第一次运行项目
-```
+```bash
 npm run build
 ```
 在 PostgreSQL 数据库下创建名为 `sso-server`后, 导入 pg.sql 文件 或 导入 pg_strcut_only.sql 并执行 `npm run initdb`
 
 ### 项目开发
-```
+```bash
 npm run dev
 ```
 
 和
 
-```
+```bash
 npm run watch-ts
 ```
 
@@ -29,7 +29,7 @@ npm run watch-ts
 浏览器直接访问
 
 ```
-http://localhost:3000/dialog/authorize?redirect_uri=http://localhost:3000&response_type=code&client_id=rmk
+http://localhost:8998/dialog/authorize?redirect_uri=http://localhost:8998&response_type=code&client_id=rmk
 ```
 
 页面返回决策选项，包括以下文字内容及两个按钮
@@ -65,7 +65,7 @@ code=7HMEo1VA1xVS6EkJ&redirect_uri=http://localhost:8998&client_id=rmk&client_se
 
 之后会返回以下内容：
 
-```
+```javascript
 {
 access_token: "nvhxw0MQf9CPbT2fr8FN4uUvGCSmCE2MiTIo14mniaaI5lJiLUwhs1OJc1d6blyJVFfPjlyFX0BhmCgJicpCdfoxJPbsYzl34FLKQDfRjC4uB9F9LlPoMmRrd98g8HN1pqCs6LYMNV24QXfvar87bSKx8f1K5F1gyWsgHbiaa9DpyHNC0NmaXz1ojDprw0aCfGlbZ6osvMng9tTWR1LmegtEJrHslPvRIq0CPXiS2l81VPAPNLUgDYivSnzEY0q7"
 token_type: "bearer"
@@ -80,13 +80,13 @@ http://localhost:8998/api/userinfo
 
 在 Header 中加 `Authorization` 字段
 
-```
+```javascript
 Authorization: Bearer nvhxw0MQf9CPbT2fr8FN4uUvGCSmCE2MiTIo14mniaaI5lJiLUwhs1OJc1d6blyJVFfPjlyFX0BhmCgJicpCdfoxJPbsYzl34FLKQDfRjC4uB9F9LlPoMmRrd98g8HN1pqCs6LYMNV24QXfvar87bSKx8f1K5F1gyWsgHbiaa9DpyHNC0NmaXz1ojDprw0aCfGlbZ6osvMng9tTWR1LmegtEJrHslPvRIq0CPXiS2l81VPAPNLUgDYivSnzEY0q7s
 ```
 
 返回用户信息：
 
-```
+```javascript
 {
   userId: "1",
   username: "vincent",
@@ -95,5 +95,34 @@ Authorization: Bearer nvhxw0MQf9CPbT2fr8FN4uUvGCSmCE2MiTIo14mniaaI5lJiLUwhs1OJc1
   ...
 }
 ```
+### OAuth2 客户端实例
 
+> 客户端由 API 服务, UI 页面组成。比如：再营销平台
+
+```bash
+# 首先确认可以访问以上 OAuth2 Server 服务，执行
+open http://localhost:8998
+
+# 页面返回 'Core_oauth2_server' 即可
+
+cd example/oauth2-client-vue
+
+npm i
+
+# ENV: 在开发环境运行
+npm run server
+
+npm run dev
+
+open http://localhost:8080
+
+# ENV: 在生产环境运行
+npm run build
+
+npm run server
+
+open http://localhost:5000
+```
+
+Enjoy Fun 🎉🎉🎉
 > Subsequent supplement ...

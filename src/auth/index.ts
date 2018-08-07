@@ -81,7 +81,7 @@ passport.use(new BearerStrategy((token: string, done: any) => {
     Axios.get(`${SESSION_HOST}/accesstoken?token=${token}`)
         .then(async (res: AxiosResponse) => {
             logger.debug('find accesstoken result: \n', res.data)
-            if (!res.data.accessToken) return done(null, true)
+            if (!res.data.accessToken) return done(null, false)
             const token = res.data.accessToken
 
             let passport = await Passport.findOne({ where: {id: token.passportId} }).catch((err: any) => done(err, null))

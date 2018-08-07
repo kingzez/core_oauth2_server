@@ -1,0 +1,11 @@
+{
+  "authorization_uri": "http://localhost:8998/dialog/authorize",
+  "access_token_uri": "http://localhost:8998/oauth/token",
+  "user_info_uri": "http://localhost:8998/api/userinfo",
+  "auth": {
+    "wesso": {
+      "clientId": "rmk",
+      "clientSecret": "rmk"
+    }
+  }
+}
