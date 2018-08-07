@@ -6,10 +6,11 @@ import passportOauth2ClientPassword from 'passport-oauth2-client-password'
 import Axios, { AxiosResponse, AxiosError } from 'axios'
 
 import { default as Passport, PassportAttributes } from '../models/passport'
-import { default as User, UserAttributes } from '../models/user'
+// import { default as User, UserAttributes } from '../models/user'
 import { default as Client } from '../models/client'
 import logger from '../util/logger'
 import { SESSION_HOST } from '../config'
+
 
 const LocalStrategy = passportLocal.Strategy
 const BasicStrategy = passportHttp.BasicStrategy
@@ -83,13 +84,14 @@ passport.use(new BearerStrategy((token: string, done: any) => {
             if (!res.data.accessToken) return done(null, true)
             const token = res.data.accessToken
 
-            let passport: PassportAttributes = await Passport.findOne({ where: {id: token.passportId} }).catch((err: any) => done(err, null))
-            let user: UserAttributes = await User.findOne({ where: {id: passport.userId} }).catch((err: any) => done(err, null))
+            let passport = await Passport.findOne({ where: {id: token.passportId} }).catch((err: any) => done(err, null))
 
             if (!passport) return done(null, false)
-            if (!user) return done(null, false)
 
-            return done(null, user, { scope: '*' })
+            passport = passport.toJSON()
+            delete passport.password
+
+            return done(null, passport, { scope: '*' })
 
         }).catch((err: AxiosError) => done(err, null))
   }
