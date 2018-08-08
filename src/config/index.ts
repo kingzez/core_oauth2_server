@@ -8,8 +8,8 @@ interface DBInterface {
 }
 
 export const DB: DBInterface = {
-        username: process.env.DB_USERNAME || 'w',
-        password: process.env.DB_PASSWORD || '',
+        username: process.env.NODE_ENV === 'production'  ?  'root'  : 'w',
+        password: process.env.NODE_ENV === 'production'  ?  'root'  : '',
         database: process.env.DB_NAME || 'sso-server',
         host: process.env.DB_HOSTNAME || 'localhost',
         port: parseInt(process.env.DB_PORT) || 5432,
