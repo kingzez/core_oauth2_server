@@ -7,7 +7,7 @@ import cors from 'cors'
 
 import { login, logout } from './routes/site'
 import { authorization, decision, token } from './routes/oauth2'
-import { info } from './routes/user'
+import { info, userRegist } from './routes/user'
 import { APP_NAME }  from './config'
 
 import './auth'
@@ -46,5 +46,6 @@ app.post('/dialog/authorize/decision', decision)
 app.post('/oauth/token', token)
 
 app.get('/api/userinfo', info)
+app.post('/api/userRegist', userRegist)
 
 export default app

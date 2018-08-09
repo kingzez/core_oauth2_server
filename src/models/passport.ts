@@ -6,7 +6,7 @@ import v4 from 'uuid'
 export interface PassportAttributes {
     id?: string,
     username: string,
-    userId: string,
+    userId?: string,
     password: string,
     email: string,
     createdAt?: number,
@@ -19,6 +19,9 @@ const attributes: SequelizeAttributes<PassportAttributes> = {
     id: {
         type: Sequelize.UUID,
         primaryKey: true,
+        defaultValue: function() {
+            return v4()
+        }
     },
     username: {
         type: Sequelize.STRING,
@@ -32,6 +35,14 @@ const attributes: SequelizeAttributes<PassportAttributes> = {
     password: {
         type: Sequelize.STRING,
         allowNull: false,
+        set(val) {
+            let salt = ',tom'
+            let hash = crypto.createHmac('md5', salt)
+                             .update(val)
+                             .digest('hex')
+            this.setDataValue('password', hash)
+        }
+
     },
     email: {
         type: Sequelize.STRING,
