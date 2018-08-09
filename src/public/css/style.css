@@ -2,14 +2,17 @@
   margin: 0;
   padding: 0;
 }
+
 html {
   overflow-y: auto;
   overflow-x:hidden;
 }
+
 html,body{
   width: 100%;
   height: 100%;
 }
+
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   /* background: linear-gradient(120grad, rgb(100, 57, 134), rgb(152, 174, 213)); */
@@ -26,16 +29,12 @@ a {
 .field:not(:last-child) {
   margin-bottom: 1.5rem;
 }
-/* 蜜汁代码 */
-/* .hero-body {
-  padding: 3rem 8rem;
-} */
 
 .login {
   background-color: #fff;
   box-shadow: 0 3rem 3rem -1rem rgba(10,10,10,.2);
   border-radius: 6px;
-  height: 600px;
+  height: 37.5rem;
   box-sizing: border-box;
   /* width: 1000px; */
   margin: 0 auto;
@@ -47,7 +46,7 @@ a {
 }
 
 .login .login-left {
-  padding-top: 80px;
+  padding-top: 5rem;
 }
 
 .login .logo {
@@ -55,7 +54,7 @@ a {
 }
 
 .login .logo img {
-  width: 160px;
+  width: 10rem;
 }
 
 .login .login-form {
@@ -65,13 +64,14 @@ a {
 .login .login-banner {
   background-color: #fdf7f5;
   background: url(../img/illustration.jpg);
-  background-size: contain;
+  background-repeat: no-repeat;
+  background-size: cover;
   position: relative;
 }
 
 .login .login-banner .slogan {
   position: absolute;
-  left: 76px;
+  left: 4.75rem;
   bottom: 100px;
   color: #fff;
   font-size: 46px;

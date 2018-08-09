@@ -48,4 +48,11 @@ app.post('/oauth/token', token)
 app.get('/api/userinfo', info)
 app.post('/api/userRegist', userRegist)
 
+// 路由先写页面（请修改）
+app.get('/register', (req, res) => {
+    res.render('register', {
+        title: '注册'
+    })
+})
+
 export default app
