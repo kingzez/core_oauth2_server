@@ -1,5 +1,11 @@
 
 Todo:
-  ☐ oauth2 client example
-  ☐ change /userinfo to /passportinfo
-  ☐ dockerfile
+  ✔ oauth2 client example @done(18-08-07 18:33)
+  ✔ change /userinfo to /passportinfo @done(18-08-07 18:33)
+  ✔ dockerfile @done(18-08-08 12:30)
+  ✔ use maid as task flow @done(18-08-10 16:46)
+  ✔ passport create api: register @done(18-08-10 16:46)
+  ✔ use username or email login @done(18-08-10 18:03)
+  ☐ register page
+  ☐ authorize page
+  ☐ model method

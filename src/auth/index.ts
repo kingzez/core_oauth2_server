@@ -4,6 +4,8 @@ import passportHttp from 'passport-http'
 import passportHttpBearer from 'passport-http-bearer'
 import passportOauth2ClientPassword from 'passport-oauth2-client-password'
 import Axios, { AxiosResponse, AxiosError } from 'axios'
+import Sequelize from 'sequelize' // TODO temp resolve
+const Op = Sequelize.Op // TODO temp resolve
 
 import { default as Passport, PassportAttributes } from '../models/passport'
 import { default as Client } from '../models/client'
@@ -32,7 +34,12 @@ passport.deserializeUser((id, done) => {
  * a user is logged in before asking them to approve the request.
  */
 passport.use(new LocalStrategy((username: string, password: string, done: any) => {
-    Passport.findOne({ where: { username, isDelete: false } })
+    Passport.findOne({
+        where: {
+            [Op.or]: [ { username }, { email: username }],
+            isDelete: false
+        }
+     })
         .then(user => {
             if (!user) return done(null, false)
             if (user.password !== password) return done(null, false)
@@ -77,7 +84,7 @@ function verifyClient(clientId: string, clientSecret: string, done: any) {
  * the authorizing user.
  */
 passport.use(new BearerStrategy((token: string, done: any) => {
-    Axios.get(`${SESSION_HOST}/accesstoken?token=${token}`)
+    Axios.get(`${SESSION_HOST}/accesstoken?passportId=none&clientId=none&token=${token}`)
         .then(async (res: AxiosResponse) => {
             logger.debug('find accesstoken result: \n', res.data)
             if (!res.data.accessToken) return done(null, false)

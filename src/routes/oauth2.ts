@@ -147,24 +147,21 @@ export const authorization:(MiddlewareFunction | RequestHandler)[] = [
 
         // Auto-approve
         if (client.isTrusted) return done(null, true)
-
-        Axios.get(`${SESSION_HOST}/accesstoken?passportId=${passport.id}&clientId=${client.clientId}`)
+        Axios.get(`${SESSION_HOST}/accesstoken?passportId=${passport.id}&clientId=${client.clientId}&token=none`)
             .then((res: AxiosResponse) => {
                 // Auto-approve
-                logger.debug('find accessToken result: \n', res.data)
-                if (!res.data.accessToken) return done(null, true)
-
+                logger.debug('use passportId clientId find accessToken result: \n', res.data)
+                if (res.data.accessToken) return done(null, true)
                 // Otherwise ask user
                 return done(null, false)
             }).catch((err: AxiosError) => {
-                logger.debug('error', err)
                 return done(err, null)
             })
     }),
     (req: Request & { oauth2: OAuth2 }, res: Response) => {
         res.render('dialog', {
             transactionId: req.oauth2.transactionID,
-            user: req.user,
+            user: req.oauth2.user,
             client: req.oauth2.client,
         })
     }

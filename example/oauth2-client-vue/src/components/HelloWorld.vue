@@ -45,7 +45,7 @@ export default {
           })
         }
       }).catch(function (err) {
-        this_.response = err
+        self.response = err
       })
     },
     authLogout: function() {
