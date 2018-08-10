@@ -6,9 +6,9 @@ import v4 from 'uuid'
 export interface PassportAttributes {
     id?: string,
     username: string,
-    userId?: string,
     password: string,
     email: string,
+    isDelete?: boolean,
     createdAt?: number,
     updatedAt?: number,
 }
@@ -28,10 +28,6 @@ const attributes: SequelizeAttributes<PassportAttributes> = {
         allowNull: false,
         unique: true,
     },
-    userId: {
-        type: Sequelize.UUID,
-        primaryKey: true,
-    },
     password: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -48,6 +44,13 @@ const attributes: SequelizeAttributes<PassportAttributes> = {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
+    },
+    isDelete: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: function() {
+            return false
+        }
     },
     createdAt: {
         type: Sequelize.BIGINT,

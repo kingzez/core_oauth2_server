@@ -6,7 +6,6 @@ import passportOauth2ClientPassword from 'passport-oauth2-client-password'
 import Axios, { AxiosResponse, AxiosError } from 'axios'
 
 import { default as Passport, PassportAttributes } from '../models/passport'
-// import { default as User, UserAttributes } from '../models/user'
 import { default as Client } from '../models/client'
 import logger from '../util/logger'
 import { SESSION_HOST } from '../config'
@@ -33,7 +32,7 @@ passport.deserializeUser((id, done) => {
  * a user is logged in before asking them to approve the request.
  */
 passport.use(new LocalStrategy((username: string, password: string, done: any) => {
-    Passport.findOne({ where: {username} })
+    Passport.findOne({ where: { username, isDelete: false } })
         .then(user => {
             if (!user) return done(null, false)
             if (user.password !== password) return done(null, false)

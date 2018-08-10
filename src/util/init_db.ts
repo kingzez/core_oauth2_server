@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid'
 import logger from './logger'
 import Passport from '../models/passport'
 import Client from '../models/client'
-import User from '../models/user'
 
 const now:number = Date.now();
 
@@ -15,21 +14,10 @@ function exit() {
 
 // init Passport
 (async() => {
-    let user = await User.create({
-        id: uuidv4(),
-        email: "rmk@xiaoyun.com",
-        site: "http://xiaoyun.com",
-        createdAt: now,
-        updatedAt: now,
-    }).catch((err) => logger.debug(err))
-    if (user) logger.debug('created: ' + JSON.stringify(user))
-
-    const userInstance = JSON.parse(JSON.stringify(user))
-
     let admin = await Passport.create({
         id: uuidv4(),
         username: 'admin',
-        userId: userInstance.id,
+        isDelete: false,
         password: 'admin',
         email: 'admin@xiaoyun.com',
         createdAt: now,
