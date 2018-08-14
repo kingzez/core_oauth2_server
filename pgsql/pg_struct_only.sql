@@ -1,10 +1,10 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : sso
+ Source Server         : localhost
  Source Server Type    : PostgreSQL
  Source Server Version : 100004
- Source Host           : localhost:5432
+ Source Host           : 127.0.0.1:5432
  Source Catalog        : sso-server
  Source Schema         : public
 
@@ -12,7 +12,7 @@
  Target Server Version : 100004
  File Encoding         : 65001
 
- Date: 10/08/2018 15:13:21
+ Date: 14/08/2018 10:25:41
 */
 
 
@@ -49,6 +49,39 @@ CREATE TABLE "public"."Passport" (
 ALTER TABLE "public"."Passport" OWNER TO "w";
 
 -- ----------------------------
+-- Table structure for Permission
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."Permission";
+CREATE TABLE "public"."Permission" (
+  "id" uuid NOT NULL,
+  "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "code" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "desc" varchar(255) COLLATE "pg_catalog"."default",
+  "status" bool,
+  "createdAt" int8 NOT NULL,
+  "updatedAt" int8
+)
+;
+ALTER TABLE "public"."Permission" OWNER TO "w";
+
+-- ----------------------------
+-- Table structure for Role
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."Role";
+CREATE TABLE "public"."Role" (
+  "id" uuid NOT NULL,
+  "name" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
+  "status" bool NOT NULL DEFAULT false,
+  "isUsed" bool NOT NULL DEFAULT false,
+  "parent" varchar(255) COLLATE "pg_catalog"."default",
+  "children" varchar(255) COLLATE "pg_catalog"."default",
+  "createdAt" int8,
+  "updatedAt" int8
+)
+;
+ALTER TABLE "public"."Role" OWNER TO "w";
+
+-- ----------------------------
 -- Primary Key structure for table Client
 -- ----------------------------
 ALTER TABLE "public"."Client" ADD CONSTRAINT "Client_pkey" PRIMARY KEY ("id");
@@ -57,3 +90,18 @@ ALTER TABLE "public"."Client" ADD CONSTRAINT "Client_pkey" PRIMARY KEY ("id");
 -- Primary Key structure for table Passport
 -- ----------------------------
 ALTER TABLE "public"."Passport" ADD CONSTRAINT "Passports_pkey" PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Primary Key structure for table Permission
+-- ----------------------------
+ALTER TABLE "public"."Permission" ADD CONSTRAINT "Permission_pkey" PRIMARY KEY ("id");
+
+-- ----------------------------
+-- Uniques structure for table Role
+-- ----------------------------
+ALTER TABLE "public"."Role" ADD CONSTRAINT "Role_name_key" UNIQUE ("name");
+
+-- ----------------------------
+-- Primary Key structure for table Role
+-- ----------------------------
+ALTER TABLE "public"."Role" ADD CONSTRAINT "Role_pkey" PRIMARY KEY ("id");

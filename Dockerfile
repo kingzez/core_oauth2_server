@@ -4,6 +4,7 @@ FROM reg.yunpro.cn/bjwjh/node:10.0.0
 WORKDIR /app
 
 ADD ./package.json /app/
+ADD ./package-lock.json /app/
 ADD ./dist /app/dist
 ADD ./views /app/views
 

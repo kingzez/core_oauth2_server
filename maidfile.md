@@ -35,5 +35,5 @@ docker build -t reg.yunpro.cn/bjwjh/core_oauth2_server:latest .
 Push docker image
 
 ```bash
-docker push -t reg.yunpro.cn/bjwjh/core_oauth2_server:latest
+docker push reg.yunpro.cn/bjwjh/core_oauth2_server:latest
 ```
