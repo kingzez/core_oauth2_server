@@ -73,3 +73,31 @@ Passport.sync({
 })
 
 export default Passport
+
+export async function findPassportByUsername(username: string) {
+    let result = await Passport.findOne({
+        where: {
+            username
+        }
+    })
+
+    return result
+}
+
+export async function findPassportByEmail(email: string) {
+    let result = await Passport.findOne({
+        where: {
+            email
+        }
+    })
+
+    return result
+}
+
+export async function insertPassport(doc: any) {
+    let result = await Passport.create(
+        doc
+    )
+
+    return result
+}

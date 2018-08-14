@@ -14,3 +14,15 @@ export const getUid = function(length: number) {
 function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
+
+
+
+/**
+ * async/await without try/catch
+ * @param promise
+ */
+export function go<T, U = any>(promise: Promise<T>): Promise<[U | null, T | null]> {
+    return promise
+        .then<[null, T]>((data: T) => [null, data])
+        .catch<[U, null]>(err => [err, undefined])
+}
