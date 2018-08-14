@@ -6,6 +6,6 @@ Todo:
   ✔ use maid as task flow @done(18-08-10 16:46)
   ✔ passport create api: register @done(18-08-10 16:46) can repeat ?
   ✔ use username or email login @done(18-08-10 18:03)
-  ☐ register page
-  ☐ authorize page
+  ✔ register page @done(18-08-14 14:36)
+  ✔ authorize page @done(18-08-14 14:36)
   ☐ model method
