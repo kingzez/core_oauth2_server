@@ -77,7 +77,8 @@ export default Passport
 export async function findPassportByUsername(username: string) {
     let result = await Passport.findOne({
         where: {
-            username
+            username,
+            isDelete: false
         }
     })
 
@@ -87,7 +88,8 @@ export async function findPassportByUsername(username: string) {
 export async function findPassportByEmail(email: string) {
     let result = await Passport.findOne({
         where: {
-            email
+            email,
+            isDelete: false
         }
     })
 
