@@ -17,6 +17,7 @@ const server = app.listen(app.get("port"), () => {
         app.get("env"),
     )
 
+    console.log('  SESSION_HOST: ', process.env.SESSION_HOST)
     console.log("  Press CTRL-C to stop\n")
 })
 

@@ -37,7 +37,7 @@ passport.use(new LocalStrategy((username: string, password: string, done: any) =
     Passport.findOne({
         where: {
             [Op.or]: [ { username }, { email: username }],
-            isDelete: false
+            isDeleted: false
         }
      })
         .then(user => {

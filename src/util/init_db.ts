@@ -17,7 +17,7 @@ function exit() {
     let admin = await Passport.create({
         id: uuidv4(),
         username: 'admin',
-        isDelete: false,
+        isDeleted: false,
         password: 'admin',
         email: 'admin@xiaoyun.com',
         createdAt: now,
