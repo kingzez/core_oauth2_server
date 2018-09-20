@@ -1,5 +1,6 @@
 import Sequelize from 'sequelize'
 import { DB } from '../config'
+import logger from '../util/logger'
 const { database, username, password, host, port, dialect } = DB
 const Op = Sequelize.Op
 
@@ -58,9 +59,9 @@ const db = new Sequelize(database, username, password, {
 })
 
 db.authenticate().then(() => {
-	console.log("  PG Connected")
+	logger.info("PG Connected")
 }).catch((err) => {
-	console.log(err)
+	logger.info(err)
 })
 
 export default db
