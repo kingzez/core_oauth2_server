@@ -3,7 +3,7 @@ import { Request, Response, RequestHandler } from "express"
 import { MiddlewareFunction } from 'oauth2orize'
 import { findPassportByUsername, findPassportByEmail, insertPassport } from '../models/passport'
 import logger from '../util/logger'
-import { go } from '../util/util'
+import { go } from '../util'
 
 
 export const userRegist: RequestHandler = async (req: Request, res: Response) => {

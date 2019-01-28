@@ -1,7 +1,8 @@
-import crypto from 'crypto'
 import Sequelize from 'sequelize'
 import db from '../lib/db'
 import v4 from 'uuid'
+
+import { md5Password } from '../util'
 
 export interface PassportAttributes {
     id?: string,
@@ -32,11 +33,7 @@ const attributes: SequelizeAttributes<PassportAttributes> = {
         type: Sequelize.STRING,
         allowNull: false,
         set(val) {
-            let salt = ',tom'
-            let hash = crypto.createHmac('md5', salt)
-                             .update(val)
-                             .digest('hex')
-            this.setDataValue('password', hash)
+            this.setDataValue('password', md5Password(val))
         }
 
     },

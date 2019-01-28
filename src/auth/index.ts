@@ -11,6 +11,7 @@ import { default as Passport, PassportAttributes } from '../models/passport'
 import { default as Client } from '../models/client'
 import logger from '../util/logger'
 import { SESSION_HOST } from '../config'
+import { md5Password } from '../util'
 
 
 const LocalStrategy = passportLocal.Strategy
@@ -34,6 +35,7 @@ passport.deserializeUser((id, done) => {
  * a user is logged in before asking them to approve the request.
  */
 passport.use(new LocalStrategy((username: string, password: string, done: any) => {
+    console.log(username)
     Passport.findOne({
         where: {
             [Op.or]: [ { username }, { email: username }],
@@ -42,7 +44,10 @@ passport.use(new LocalStrategy((username: string, password: string, done: any) =
      })
         .then(user => {
             if (!user) return done(null, false)
-            if (user.password !== password) return done(null, false)
+            if (user.password !== md5Password(password)) {
+                logger.error('password error')
+                return done(null, false)
+            }
             return done(null, user)
         })
         .catch(err => done(err, null))
@@ -61,10 +66,14 @@ passport.use(new LocalStrategy((username: string, password: string, done: any) =
  * the specification, in practice it is quite common.
  */
 function verifyClient(clientId: string, clientSecret: string, done: any) {
+    console.log('#$%^&*(&^%$%^&*()&*(&*(*(')
     Client.findOne({ where: { clientId } })
         .then(client => {
             if (!client) return done(null, false)
-            if (client.clientSecret !== clientSecret) return done(null, false)
+            logger.debug('client', JSON.parse(JSON.stringify(client)))
+            if (client.clientSecret !== clientSecret) {
+                return done(null, false)
+            }
             return done(null, client)
         })
         .catch(err => done(err, null))

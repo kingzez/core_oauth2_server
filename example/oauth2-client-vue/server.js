@@ -15,7 +15,7 @@ const app = express()
 app.use(log4js.connectLogger(logger, { level: 'auto', format: ':method :url :status' }))
 app.use(cors())
 app.use(bodyParser.json())
-// app.use(allowCrossDomain)
+app.use(allowCrossDomain)
 app.use(history())
 app.use(express.static(__dirname + '/dist'));
 

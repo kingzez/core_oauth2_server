@@ -13,7 +13,7 @@ import Axios, { AxiosResponse, AxiosError } from 'axios'
 
 import { default as Client, ClientAttributes } from '../models/client'
 import { PassportAttributes } from '../models/passport'
-import { getUid } from '../util/util'
+import { getUid } from '../util'
 import logger from '../util/logger'
 import { SESSION_HOST } from '../config'
 
@@ -57,6 +57,7 @@ server.deserializeClient((id: string, done: DeserializeClientDoneFunction) => {
 
 server.grant(oauth2orize.grant.code((client: ClientAttributes, redirectUri: string, passport: PassportAttributes, done: any) => {
     const code = getUid(16)
+    logger.debug('is execute8*********************(2)')
     Axios.post(SESSION_HOST+'/authcode', {
         code,
         clientId: client.id,
@@ -96,6 +97,8 @@ server.grant(oauth2orize.grant.token((client: ClientAttributes, passport: Passpo
 // code.
 
 server.exchange(oauth2orize.exchange.code((client: ClientAttributes, code: string, redirectUri: string, done: any) => {
+    logger.debug('is execute=======================================(3)')
+    logger.debug('client', code,)
     Axios.get(`${SESSION_HOST}/authcode?code=${code}`)
         .then((res: AxiosResponse) => {
             logger.debug('find authCode result: \n', res.data)
@@ -138,6 +141,7 @@ export const authorization:(MiddlewareFunction | RequestHandler)[] = [
     server.authorization((clientId: string, redirectUri: string, done: any) => {
         Client.findOne({ where: {clientId} })
             .then((client: ClientAttributes) => {
+                logger.debug('0=0=0=0=0=0=0=0=0=0=0=0=(1)',JSON.parse(JSON.stringify(client)))
                 if (!client) return done(client, null)
                 // TODO registered scope
                 return done(null, client, redirectUri)

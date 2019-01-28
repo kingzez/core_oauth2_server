@@ -1,3 +1,5 @@
+import crypto from 'crypto'
+
 export const getUid = function(length: number) {
     let uid = ''
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -25,4 +27,9 @@ export function go<T, U = any>(promise: Promise<T>): Promise<[U | null, T | null
     return promise
         .then<[null, T]>((data: T) => [null, data])
         .catch<[U, null]>(err => [err, undefined])
+}
+
+export function md5Password(val: string) {
+    let salt = ',tom'
+    return crypto.createHmac('md5', salt).update(val).digest('hex')
 }
