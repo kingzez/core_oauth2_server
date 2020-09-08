@@ -1,6 +1,6 @@
 # core_oauth2_server
 
-[Englist](http://review.xiaoyun.com/diffusion/21/browse/master/README.md?as=remarkup)
+[Englist](./README.md)
 
 ### 安装项目依赖
 ```bash
@@ -90,7 +90,7 @@ Authorization: Bearer nvhxw0MQf9CPbT2fr8FN4uUvGCSmCE2MiTIo14mniaaI5lJiLUwhs1OJc1
 {
   userId: "1",
   username: "vincent",
-  email: "admin@xiaoyun.com",
+  email: "admin@gmail.com",
   scope: "*",
   ...
 }

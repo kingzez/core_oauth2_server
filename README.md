@@ -1,6 +1,6 @@
 # core_oauth2_server
 
-[中文](http://review.xiaoyun.com/diffusion/21/browse/master/README-CN.md?as=remarkup)
+[中文](./README-CN.md)
 
 ### Install project dependence
 ```bash
@@ -91,7 +91,7 @@ You should then get back your user id like so:
 {
   userId: "1",
   username: "vincent",
-  email: "admin@xiaoyun.com",
+  email: "admin@gmail.com",
   scope: "*",
   ...
 }

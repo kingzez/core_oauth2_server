@@ -27,7 +27,7 @@ nodemon dist/server.js
 Build docker image
 
 ```bash
-docker build -t reg.yunpro.cn/bjwjh/core_oauth2_server:latest .
+docker build -t wangzezhi/core_oauth2_server:latest .
 ```
 
 ## image:push
@@ -35,5 +35,5 @@ docker build -t reg.yunpro.cn/bjwjh/core_oauth2_server:latest .
 Push docker image
 
 ```bash
-docker push reg.yunpro.cn/bjwjh/core_oauth2_server:latest
+docker push wangzezhi/core_oauth2_server:latest
 ```
