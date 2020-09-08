@@ -97,7 +97,7 @@ Authorization: Bearer nvhxw0MQf9CPbT2fr8FN4uUvGCSmCE2MiTIo14mniaaI5lJiLUwhs1OJc1
 ```
 ### OAuth2 客户端实例
 
-> 客户端由 API 服务, UI 页面组成。比如：再营销平台
+> 客户端由 API 服务, UI 页面组成。比如：运营平台
 
 ```bash
 # 首先确认可以访问以上 OAuth2 Server 服务，执行
